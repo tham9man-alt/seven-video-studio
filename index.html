@@ -3,160 +3,226 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
 <title>SEVEN VIDEO STUDIO</title>
 <style>
 *{box-sizing:border-box}
 body{
  margin:0;padding:20px;
- background:#0b1220;color:#f4f6fa;
- font-family:Arial,sans-serif;
+ background:#101827;color:#f4f6fa;
+ font-family:Arial,sans-serif
 }
-main{max-width:850px;margin:auto}
-header{margin-bottom:25px}
-.logo{color:#d8b56a;letter-spacing:3px}
-h1{font-size:30px;margin:8px 0}
-p{color:#aab6c7}
+.container{max-width:850px;margin:auto}
+header{text-align:center;margin-bottom:25px}
+h1{color:#d8b56a;letter-spacing:1px}
+.subtitle{color:#aab5c5}
 .panel{
- background:#14243a;padding:18px;
- border:1px solid #30435d;
- border-radius:16px;margin-bottom:18px
+ background:#1b293b;padding:18px;
+ border-radius:14px;margin:15px 0;
+ border:1px solid #304158
 }
-.pick{
- display:block;text-align:center;
- padding:22px;border:1px dashed #d8b56a;
- border-radius:12px;color:#d8b56a;
- cursor:pointer;font-weight:bold
+button,.upload{
+ background:#d8b56a;color:#14243a;
+ border:0;padding:12px 16px;
+ border-radius:8px;font-weight:bold;
+ cursor:pointer;margin:5px
 }
+button.secondary{background:#344a64;color:white}
+button:disabled{opacity:.4;cursor:not-allowed}
 input[type=file]{display:none}
 video{
- width:100%;margin-top:15px;
- background:#000;border-radius:12px
+ width:100%;max-height:430px;
+ background:#080d14;border-radius:10px
 }
-.info{
- display:grid;grid-template-columns:1fr 1fr;
- gap:10px;margin-top:15px
-}
-.info div{background:#0b1728;padding:12px;border-radius:10px}
-small{display:block;color:#aab6c7}
-strong{display:block;margin-top:5px}
+input[type=range]{width:100%;accent-color:#d8b56a}
 input[type=number]{
- width:100%;padding:12px;
- border-radius:9px;border:1px solid #40536c;
- background:#0b1728;color:white;font-size:16px
+ width:100%;padding:11px;border-radius:7px;
+ border:1px solid #53647a;background:#101827;
+ color:white;margin-top:7px
 }
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label.field{color:#aab6c7;font-size:14px}
-button{
- padding:12px 18px;border:0;border-radius:10px;
- background:#d8b56a;color:#172236;
- font-weight:bold;margin:12px 5px 0 0;
- cursor:pointer
-}
-button.secondary{background:#30435d;color:white}
-#status{line-height:1.8}
-@media(max-width:500px){body{padding:13px}}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.field{flex:1;min-width:130px}
+.time{display:flex;justify-content:space-between;color:#d8b56a;font-size:14px}
+.status{color:#b8c5d5;line-height:1.8}
+.actions{display:flex;flex-wrap:wrap;gap:5px}
+footer{text-align:center;color:#77869a;font-size:12px;margin:30px}
 </style>
 </head>
 <body>
-<main>
+<div class="container">
 <header>
-<div class="logo">SEVEN VIDEO STUDIO</div>
-<h1>التجربة الأولى</h1>
-<p>Create Beyond Limits</p>
+<h1>SEVEN VIDEO STUDIO</h1>
+<div class="subtitle">استوديو تحرير الفيديو — النسخة التجريبية</div>
 </header>
 
 <section class="panel">
-<h3>استيراد الفيديو</h3>
-<label class="pick" for="file">＋ اختر فيديو من جهازك</label>
-<input id="file" type="file" accept="video/*">
+<h3>1. اختر الفيديو</h3>
+<label class="upload" for="videoFile">اختر فيديو من جهازك</label>
+<input id="videoFile" type="file" accept="video/*">
+<p class="status" id="fileInfo">لم يتم اختيار فيديو بعد.</p>
+</section>
+
+<section class="panel">
+<h3>2. معاينة الفيديو</h3>
 <video id="video" controls playsinline></video>
-<div class="info">
-<div><small>مدة الفيديو</small><strong id="duration">—</strong></div>
-<div><small>دقة الفيديو</small><strong id="resolution">—</strong></div>
+<div class="time">
+<span id="currentTime">00:00</span>
+<span id="duration">00:00</span>
 </div>
 </section>
 
 <section class="panel">
-<h3>تحديد المقطع</h3>
-<div class="controls">
-<label class="field">البداية بالثواني
-<input id="start" type="number" min="0" step="0.1" value="0">
-</label>
-<label class="field">النهاية بالثواني
-<input id="end" type="number" min="0" step="0.1" value="0">
-</label>
-</div>
-<button id="preview" disabled>معاينة المقطع</button>
-<button id="stop" class="secondary" disabled>إيقاف</button>
-<p id="status">اختر فيديو لبدء التجربة.</p>
+<h3>3. الشريط الزمني</h3>
+<input id="timeline" type="range" min="0" max="100" value="0" step="0.1" disabled>
+<p class="status">حرّك المؤشر للتنقل داخل الفيديو.</p>
 </section>
-</main>
+
+<section class="panel">
+<h3>4. تحديد المقطع</h3>
+<div class="row">
+<div class="field">
+<label for="start">بداية المقطع (ثانية)</label>
+<input id="start" type="number" min="0" step="0.1" value="0">
+<button class="secondary" id="setStart" disabled>تحديد البداية من الموضع الحالي</button>
+</div>
+<div class="field">
+<label for="end">نهاية المقطع (ثانية)</label>
+<input id="end" type="number" min="0" step="0.1" value="0">
+<button class="secondary" id="setEnd" disabled>تحديد النهاية من الموضع الحالي</button>
+</div>
+</div>
+<div class="actions">
+<button id="preview" disabled>معاينة المقطع المحدد</button>
+<button id="stop" class="secondary" disabled>إيقاف المعاينة</button>
+</div>
+<p class="status" id="message">اختر فيديو للبدء.</p>
+</section>
+
+<footer>SEVEN VIDEO STUDIO © 2026</footer>
+</div>
 
 <script>
-const file=document.getElementById('file');
+const fileInput=document.getElementById('videoFile');
 const video=document.getElementById('video');
-const duration=document.getElementById('duration');
-const resolution=document.getElementById('resolution');
-const start=document.getElementById('start');
-const end=document.getElementById('end');
-const preview=document.getElementById('preview');
-const stop=document.getElementById('stop');
-const status=document.getElementById('status');
-
-let segmentEnd=0;
+const timeline=document.getElementById('timeline');
+const startInput=document.getElementById('start');
+const endInput=document.getElementById('end');
+const currentTime=document.getElementById('currentTime');
+const durationText=document.getElementById('duration');
+const fileInfo=document.getElementById('fileInfo');
+const message=document.getElementById('message');
+const previewBtn=document.getElementById('preview');
+const stopBtn=document.getElementById('stop');
+const setStartBtn=document.getElementById('setStart');
+const setEndBtn=document.getElementById('setEnd');
 let videoURL=null;
+let previewing=false;
 
-file.addEventListener('change',()=>{
- const selected=file.files[0];
- if(!selected)return;
+function formatTime(seconds){
+ if(!Number.isFinite(seconds))return '00:00';
+ const m=Math.floor(seconds/60);
+ const s=Math.floor(seconds%60);
+ return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+function updateTime(){
+ currentTime.textContent=formatTime(video.currentTime);
+ if(video.duration){
+  timeline.value=(video.currentTime/video.duration)*100;
+ }
+}
+
+function validate(){
+ const duration=video.duration;
+ const a=Number(startInput.value);
+ const b=Number(endInput.value);
+ const valid=Number.isFinite(duration)&&
+  a>=0&&b>a&&b<=duration;
+ previewBtn.disabled=!valid;
+ if(duration){
+  message.textContent=valid
+   ?'المقطع جاهز للمعاينة.'
+   :'تحقق من البداية والنهاية. يجب أن تكون النهاية بعد البداية وداخل مدة الفيديو.';
+ }
+ return valid;
+}
+
+fileInput.addEventListener('change',()=>{
+ const file=fileInput.files[0];
+ if(!file)return;
+ if(!file.type.startsWith('video/')){
+  message.textContent='الملف المختار ليس فيديو.';
+  return;
+ }
  if(videoURL)URL.revokeObjectURL(videoURL);
- videoURL=URL.createObjectURL(selected);
+ videoURL=URL.createObjectURL(file);
  video.src=videoURL;
  video.load();
- status.textContent='تم اختيار الفيديو، جارٍ تحميل بياناته.';
+ fileInfo.textContent='الفيديو: '+file.name;
+ message.textContent='جارٍ تحميل معلومات الفيديو...';
 });
 
 video.addEventListener('loadedmetadata',()=>{
- duration.textContent=video.duration.toFixed(1)+' ثانية';
- resolution.textContent=video.videoWidth+' × '+video.videoHeight;
- start.value=0;
- end.value=video.duration.toFixed(1);
- end.max=video.duration;
- start.max=video.duration;
- preview.disabled=false;
- stop.disabled=false;
- status.textContent='تم تحميل الفيديو بنجاح. يمكنك تحديد المقطع.';
-});
-
-preview.addEventListener('click',()=>{
- const a=Number(start.value);
- const b=Number(end.value);
-
- if(a<0||b>video.duration||a>=b){
-  status.textContent='تحقق من وقت البداية والنهاية.';
-  return;
- }
-
- segmentEnd=b;
- video.currentTime=a;
- video.play();
- status.textContent='تتم الآن معاينة المقطع المحدد.';
+ const d=video.duration;
+ durationText.textContent=formatTime(d);
+ timeline.disabled=false;
+ timeline.max=100;
+ startInput.value=0;
+ endInput.value=d.toFixed(1);
+ setStartBtn.disabled=false;
+ setEndBtn.disabled=false;
+ stopBtn.disabled=false;
+ updateTime();
+ validate();
 });
 
 video.addEventListener('timeupdate',()=>{
- if(segmentEnd&&video.currentTime>=segmentEnd){
+ updateTime();
+ if(previewing&&video.currentTime>=Number(endInput.value)){
   video.pause();
-  video.currentTime=segmentEnd;
-  segmentEnd=0;
-  status.textContent='انتهت معاينة المقطع.';
+  previewing=false;
+  message.textContent='انتهت معاينة المقطع المحدد.';
  }
 });
 
-stop.addEventListener('click',()=>{
+video.addEventListener('play',()=>{
+ if(!previewing)message.textContent='تشغيل الفيديو الكامل.';
+});
+
+timeline.addEventListener('input',()=>{
+ if(!video.duration)return;
+ video.currentTime=(Number(timeline.value)/100)*video.duration;
+});
+
+setStartBtn.addEventListener('click',()=>{
+ startInput.value=video.currentTime.toFixed(1);
+ validate();
+});
+
+setEndBtn.addEventListener('click',()=>{
+ endInput.value=video.currentTime.toFixed(1);
+ validate();
+});
+
+startInput.addEventListener('input',validate);
+endInput.addEventListener('input',validate);
+
+previewBtn.addEventListener('click',()=>{
+ if(!validate())return;
+ previewing=true;
+ video.currentTime=Number(startInput.value);
+ message.textContent='تتم الآن معاينة المقطع المحدد.';
+ video.play().catch(()=>{
+  previewing=false;
+  message.textContent='اضغط تشغيل داخل مشغل الفيديو لبدء المعاينة.';
+ });
+});
+
+stopBtn.addEventListener('click',()=>{
  video.pause();
- segmentEnd=0;
- status.textContent='تم إيقاف المعاينة.';
+ previewing=false;
+ message.textContent='تم إيقاف المعاينة.';
 });
 </script>
 </body>
