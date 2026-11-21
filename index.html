@@ -6,224 +6,442 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101827">
 <title>SEVEN VIDEO STUDIO</title>
+
 <style>
+:root{
+ --gold:#e8c477;
+ --navy:#101827;
+ --panel:#1b293b;
+ --text:#f4f6fa;
+ --muted:#aab5c5;
+ --border:#304158;
+}
 *{box-sizing:border-box}
 body{
- margin:0;padding:20px;
- background:#101827;color:#f4f6fa;
- font-family:Arial,sans-serif
+ margin:0;padding:18px;
+ background:radial-gradient(circle at top right,#203751,#101827 55%);
+ color:var(--text);
+ font-family:Arial,sans-serif;
 }
-.container{max-width:850px;margin:auto}
+.container{max-width:900px;margin:auto}
 header{text-align:center;margin-bottom:25px}
-h1{color:#d8b56a;letter-spacing:1px}
-.subtitle{color:#aab5c5}
-.panel{
- background:#1b293b;padding:18px;
- border-radius:14px;margin:15px 0;
- border:1px solid #304158
+.logo{
+ width:55px;height:55px;margin:auto;
+ display:grid;place-items:center;
+ border-radius:16px;background:var(--gold);
+ color:#14243a;font-size:27px;font-weight:bold;
 }
+h1{color:var(--gold);letter-spacing:1px}
+.subtitle{color:var(--muted)}
+.panel{
+ background:linear-gradient(145deg,#1d2c40,#182538);
+ padding:19px;border-radius:16px;
+ margin:15px 0;border:1px solid var(--border);
+ box-shadow:0 10px 25px #0003;
+}
+h3{color:var(--gold);margin-top:0}
 button,.upload{
- background:#d8b56a;color:#14243a;
- border:0;padding:12px 16px;
- border-radius:8px;font-weight:bold;
- cursor:pointer;margin:5px
+ display:inline-block;
+ background:var(--gold);color:#14243a;
+ border:0;padding:13px 16px;
+ border-radius:10px;font-weight:bold;
+ cursor:pointer;margin:5px;
+ min-height:44px;
 }
 button.secondary{background:#344a64;color:white}
+button.danger{background:#914653;color:white}
 button:disabled{opacity:.4;cursor:not-allowed}
+button:active{transform:scale(.98)}
 input[type=file]{display:none}
 video{
- width:100%;max-height:430px;
- background:#080d14;border-radius:10px
+ width:100%;max-height:500px;
+ background:#080d14;border-radius:12px;
+ display:block;
 }
-input[type=range]{width:100%;accent-color:#d8b56a}
+input[type=range]{width:100%;accent-color:var(--gold)}
 input[type=number]{
- width:100%;padding:11px;border-radius:7px;
+ width:100%;padding:12px;border-radius:9px;
  border:1px solid #53647a;background:#101827;
- color:white;margin-top:7px
+ color:white;margin-top:7px;font-size:16px;
 }
 .row{display:flex;gap:12px;flex-wrap:wrap}
 .field{flex:1;min-width:130px}
-.time{display:flex;justify-content:space-between;color:#d8b56a;font-size:14px}
+.time{
+ display:flex;justify-content:space-between;
+ color:var(--gold);font-size:14px;
+ direction:ltr;margin-top:10px;
+}
 .status{color:#b8c5d5;line-height:1.8}
 .actions{display:flex;flex-wrap:wrap;gap:5px}
+.note{color:var(--muted);font-size:12px;line-height:1.7}
 footer{text-align:center;color:#77869a;font-size:12px;margin:30px}
+@media(max-width:600px){
+ body{padding:12px}
+ .panel{padding:15px}
+ .actions button,.field button{width:100%;margin:5px 0}
+}
 </style>
 </head>
+
 <body>
 <div class="container">
+
 <header>
-<h1>SEVEN VIDEO STUDIO</h1>
-<div class="subtitle">استوديو تحرير الفيديو — النسخة التجريبية</div>
+ <div class="logo">S</div>
+ <h1>SEVEN VIDEO STUDIO</h1>
+ <div class="subtitle">استوديو تحرير الفيديو — النسخة التجريبية</div>
 </header>
 
 <section class="panel">
-<h3>1. اختر الفيديو</h3>
-<label class="upload" for="videoFile">اختر فيديو من جهازك</label>
+<h3>▣ 1. اختر الفيديو</h3>
+<label class="upload" for="videoFile">＋ اختر فيديو من جهازك</label>
 <input id="videoFile" type="file" accept="video/*">
 <p class="status" id="fileInfo">لم يتم اختيار فيديو بعد.</p>
 </section>
 
 <section class="panel">
-<h3>2. معاينة الفيديو</h3>
+<h3>▶ 2. معاينة الفيديو</h3>
 <video id="video" controls playsinline></video>
 <div class="time">
-<span id="currentTime">00:00</span>
-<span id="duration">00:00</span>
+ <span id="currentTime">00:00</span>
+ <span id="duration">00:00</span>
+</div>
+<div class="actions">
+ <button class="secondary" id="playPause" disabled>▶ تشغيل / إيقاف</button>
+ <button class="secondary" id="backFive" disabled>↶ رجوع 5 ثوانٍ</button>
+ <button class="secondary" id="forwardFive" disabled>↷ تقديم 5 ثوانٍ</button>
 </div>
 </section>
 
 <section class="panel">
-<h3>3. الشريط الزمني</h3>
-<input id="timeline" type="range" min="0" max="100" value="0" step="0.1" disabled>
+<h3>⌁ 3. الشريط الزمني</h3>
+<input id="timeline" type="range"
+ min="0" max="100" value="0" step="0.1" disabled>
 <p class="status">حرّك المؤشر للتنقل داخل الفيديو.</p>
 </section>
 
 <section class="panel">
-<h3>4. تحديد المقطع</h3>
+<h3>✂ 4. تحديد المقطع</h3>
+
 <div class="row">
-<div class="field">
-<label for="start">بداية المقطع (ثانية)</label>
-<input id="start" type="number" min="0" step="0.1" value="0">
-<button class="secondary" id="setStart" disabled>تحديد البداية من الموضع الحالي</button>
+ <div class="field">
+  <label for="start">بداية المقطع (ثانية)</label>
+  <input id="start" type="number" min="0" step="0.1" value="0" disabled>
+  <button class="secondary" id="setStart" disabled>
+   تحديد البداية من الموضع الحالي
+  </button>
+ </div>
+
+ <div class="field">
+  <label for="end">نهاية المقطع (ثانية)</label>
+  <input id="end" type="number" min="0" step="0.1" value="0" disabled>
+  <button class="secondary" id="setEnd" disabled>
+   تحديد النهاية من الموضع الحالي
+  </button>
+ </div>
 </div>
-<div class="field">
-<label for="end">نهاية المقطع (ثانية)</label>
-<input id="end" type="number" min="0" step="0.1" value="0">
-<button class="secondary" id="setEnd" disabled>تحديد النهاية من الموضع الحالي</button>
-</div>
-</div>
+
 <div class="actions">
-<button id="preview" disabled>معاينة المقطع المحدد</button>
-<button id="stop" class="secondary" disabled>إيقاف المعاينة</button>
+ <button id="preview" disabled>▷ معاينة المقطع المحدد</button>
+ <button id="stop" class="danger" disabled>■ إيقاف المعاينة</button>
 </div>
+
 <p class="status" id="message">اختر فيديو للبدء.</p>
+<p class="note">
+هذه النسخة تتيح تحديد المقطع ومعاينته.
+تصدير الفيديو المقصوص سيكون مرحلة تطوير لاحقة.
+</p>
 </section>
 
 <footer>SEVEN VIDEO STUDIO © 2026</footer>
 </div>
 
 <script>
-const fileInput=document.getElementById('videoFile');
-const video=document.getElementById('video');
-const timeline=document.getElementById('timeline');
-const startInput=document.getElementById('start');
-const endInput=document.getElementById('end');
-const currentTime=document.getElementById('currentTime');
-const durationText=document.getElementById('duration');
-const fileInfo=document.getElementById('fileInfo');
-const message=document.getElementById('message');
-const previewBtn=document.getElementById('preview');
-const stopBtn=document.getElementById('stop');
-const setStartBtn=document.getElementById('setStart');
-const setEndBtn=document.getElementById('setEnd');
+(() => {
+const $ = id => document.getElementById(id);
+
+const fileInput=$('videoFile');
+const video=$('video');
+const timeline=$('timeline');
+const startInput=$('start');
+const endInput=$('end');
+const currentTime=$('currentTime');
+const durationText=$('duration');
+const fileInfo=$('fileInfo');
+const message=$('message');
+
+const previewBtn=$('preview');
+const stopBtn=$('stop');
+const setStartBtn=$('setStart');
+const setEndBtn=$('setEnd');
+const playPauseBtn=$('playPause');
+const backBtn=$('backFive');
+const forwardBtn=$('forwardFive');
+
 let videoURL=null;
 let previewing=false;
 
 function formatTime(seconds){
- if(!Number.isFinite(seconds))return '00:00';
- const m=Math.floor(seconds/60);
- const s=Math.floor(seconds%60);
- return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+ if(!Number.isFinite(seconds)||seconds<0)return '00:00';
+
+ const total=Math.floor(seconds);
+ const h=Math.floor(total/3600);
+ const m=Math.floor((total%3600)/60);
+ const s=total%60;
+
+ if(h>0){
+  return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
+ }
+
+ return [m,s].map(n=>String(n).padStart(2,'0')).join(':');
+}
+
+function setMessage(text){
+ message.textContent=text;
+}
+
+function enableTools(enabled){
+ [
+  timeline,startInput,endInput,
+  setStartBtn,setEndBtn,playPauseBtn,
+  backBtn,forwardBtn
+ ].forEach(el=>el.disabled=!enabled);
+
+ previewBtn.disabled=!enabled;
+ stopBtn.disabled=true;
+}
+
+function validRange(){
+ const d=video.duration;
+ const a=Number(startInput.value);
+ const b=Number(endInput.value);
+
+ if(!Number.isFinite(d)||
+    !Number.isFinite(a)||
+    !Number.isFinite(b))return null;
+
+ if(a<0||b<=a||b>d)return null;
+
+ return {start:a,end:b};
 }
 
 function updateTime(){
  currentTime.textContent=formatTime(video.currentTime);
- if(video.duration){
+
+ if(Number.isFinite(video.duration)&&video.duration>0){
   timeline.value=(video.currentTime/video.duration)*100;
  }
 }
 
-function validate(){
- const duration=video.duration;
- const a=Number(startInput.value);
- const b=Number(endInput.value);
- const valid=Number.isFinite(duration)&&
-  a>=0&&b>a&&b<=duration;
- previewBtn.disabled=!valid;
- if(duration){
-  message.textContent=valid
-   ?'المقطع جاهز للمعاينة.'
-   :'تحقق من البداية والنهاية. يجب أن تكون النهاية بعد البداية وداخل مدة الفيديو.';
- }
- return valid;
+function stopPreview(showMessage=true){
+ previewing=false;
+ video.pause();
+ stopBtn.disabled=true;
+ previewBtn.disabled=!video.src;
+
+ if(showMessage)setMessage('تم إيقاف المعاينة.');
 }
 
 fileInput.addEventListener('change',()=>{
- const file=fileInput.files[0];
+ const file=fileInput.files&&fileInput.files[0];
  if(!file)return;
+
  if(!file.type.startsWith('video/')){
-  message.textContent='الملف المختار ليس فيديو.';
+  setMessage('الملف المختار ليس ملف فيديو.');
   return;
  }
- if(videoURL)URL.revokeObjectURL(videoURL);
+
+ if(videoURL){
+  URL.revokeObjectURL(videoURL);
+ }
+
+ previewing=false;
+ video.pause();
+ video.removeAttribute('src');
+ video.load();
+
  videoURL=URL.createObjectURL(file);
  video.src=videoURL;
- video.load();
- fileInfo.textContent='الفيديو: '+file.name;
- message.textContent='جارٍ تحميل معلومات الفيديو...';
+
+ fileInfo.textContent=
+  'الفيديو: '+file.name+
+  ' — '+(file.size/1048576).toFixed(2)+' MB';
+
+ enableTools(false);
+ timeline.value=0;
+ currentTime.textContent='00:00';
+ durationText.textContent='00:00';
+
+ setMessage('جارٍ تحميل معلومات الفيديو...');
 });
 
 video.addEventListener('loadedmetadata',()=>{
  const d=video.duration;
- durationText.textContent=formatTime(d);
- timeline.disabled=false;
- timeline.max=100;
- startInput.value=0;
+
+ if(!Number.isFinite(d)||d<=0){
+  setMessage('تعذّر قراءة مدة الفيديو.');
+  return;
+ }
+
+ timeline.value=0;
+ startInput.value='0';
  endInput.value=d.toFixed(1);
- setStartBtn.disabled=false;
- setEndBtn.disabled=false;
- stopBtn.disabled=false;
+
+ startInput.max=d;
+ endInput.max=d;
+
+ durationText.textContent=formatTime(d);
+
+ enableTools(true);
  updateTime();
- validate();
+
+ setMessage('تم تحميل الفيديو بنجاح. يمكنك تحديد المقطع.');
 });
 
 video.addEventListener('timeupdate',()=>{
  updateTime();
- if(previewing&&video.currentTime>=Number(endInput.value)){
-  video.pause();
-  previewing=false;
-  message.textContent='انتهت معاينة المقطع المحدد.';
+
+ if(previewing){
+  const range=validRange();
+
+  if(range&&video.currentTime>=range.end){
+   video.pause();
+   video.currentTime=range.end;
+   previewing=false;
+   stopBtn.disabled=true;
+   previewBtn.disabled=false;
+
+   setMessage('انتهت معاينة المقطع المحدد.');
+  }
  }
 });
 
 video.addEventListener('play',()=>{
- if(!previewing)message.textContent='تشغيل الفيديو الكامل.';
+ playPauseBtn.textContent='Ⅱ إيقاف مؤقت';
+});
+
+video.addEventListener('pause',()=>{
+ playPauseBtn.textContent='▶ تشغيل / إيقاف';
 });
 
 timeline.addEventListener('input',()=>{
- if(!video.duration)return;
- video.currentTime=(Number(timeline.value)/100)*video.duration;
+ if(!Number.isFinite(video.duration))return;
+
+ video.currentTime=
+  (Number(timeline.value)/100)*video.duration;
+});
+
+playPauseBtn.addEventListener('click',()=>{
+ if(video.paused){
+  stopPreview(false);
+  video.play().catch(()=>{
+   setMessage('تعذّر تشغيل الفيديو.');
+  });
+ }else{
+  video.pause();
+ }
+});
+
+backBtn.addEventListener('click',()=>{
+ video.currentTime=Math.max(0,video.currentTime-5);
+});
+
+forwardBtn.addEventListener('click',()=>{
+ video.currentTime=Math.min(
+  video.duration||0,
+  video.currentTime+5
+ );
 });
 
 setStartBtn.addEventListener('click',()=>{
  startInput.value=video.currentTime.toFixed(1);
+
+ if(Number(endInput.value)<=video.currentTime){
+  endInput.value=Math.min(
+   video.duration,
+   video.currentTime+1
+  ).toFixed(1);
+ }
+
  validate();
 });
 
 setEndBtn.addEventListener('click',()=>{
  endInput.value=video.currentTime.toFixed(1);
+
+ if(Number(startInput.value)>=video.currentTime){
+  startInput.value=Math.max(
+   0,
+   video.currentTime-1
+  ).toFixed(1);
+ }
+
  validate();
 });
 
-startInput.addEventListener('input',validate);
-endInput.addEventListener('input',validate);
+function validate(){
+ const range=validRange();
+
+ previewBtn.disabled=!range;
+
+ if(range){
+  setMessage(
+   'المقطع جاهز للمعاينة: '+
+   formatTime(range.start)+' إلى '+
+   formatTime(range.end)
+  );
+ }else{
+  setMessage(
+   'تحقق من البداية والنهاية. يجب أن تكون النهاية بعد البداية وداخل مدة الفيديو.'
+  );
+ }
+
+ return !!range;
+}
+
+startInput.addEventListener('change',validate);
+endInput.addEventListener('change',validate);
 
 previewBtn.addEventListener('click',()=>{
- if(!validate())return;
+ const range=validRange();
+
+ if(!range){
+  validate();
+  return;
+ }
+
+ video.pause();
+ video.currentTime=range.start;
+
  previewing=true;
- video.currentTime=Number(startInput.value);
- message.textContent='تتم الآن معاينة المقطع المحدد.';
+ previewBtn.disabled=true;
+ stopBtn.disabled=false;
+
+ setMessage('تتم الآن معاينة المقطع المحدد.');
+
  video.play().catch(()=>{
   previewing=false;
-  message.textContent='اضغط تشغيل داخل مشغل الفيديو لبدء المعاينة.';
+  previewBtn.disabled=false;
+  stopBtn.disabled=true;
+  setMessage('تعذّر تشغيل المعاينة.');
  });
 });
 
 stopBtn.addEventListener('click',()=>{
- video.pause();
- previewing=false;
- message.textContent='تم إيقاف المعاينة.';
+ stopPreview();
 });
+
+video.addEventListener('error',()=>{
+ if(video.src){
+  setMessage('تعذّر تشغيل هذا الفيديو. جرّب صيغة أخرى.');
+ }
+});
+
+window.addEventListener('beforeunload',()=>{
+ if(videoURL)URL.revokeObjectURL(videoURL);
+});
+
+})();
 </script>
 </body>
 </html>
