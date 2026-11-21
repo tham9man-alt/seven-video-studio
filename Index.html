@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEVEN VIDEO STUDIO</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;
+ background:#0b1220;color:#f4f6fa;
+ font-family:Arial,sans-serif;
+}
+main{max-width:850px;margin:auto}
+header{margin-bottom:25px}
+.logo{color:#d8b56a;letter-spacing:3px}
+h1{font-size:30px;margin:8px 0}
+p{color:#aab6c7}
+.panel{
+ background:#14243a;padding:18px;
+ border:1px solid #30435d;
+ border-radius:16px;margin-bottom:18px
+}
+.pick{
+ display:block;text-align:center;
+ padding:22px;border:1px dashed #d8b56a;
+ border-radius:12px;color:#d8b56a;
+ cursor:pointer;font-weight:bold
+}
+input[type=file]{display:none}
+video{
+ width:100%;margin-top:15px;
+ background:#000;border-radius:12px
+}
+.info{
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:10px;margin-top:15px
+}
+.info div{background:#0b1728;padding:12px;border-radius:10px}
+small{display:block;color:#aab6c7}
+strong{display:block;margin-top:5px}
+input[type=number]{
+ width:100%;padding:12px;
+ border-radius:9px;border:1px solid #40536c;
+ background:#0b1728;color:white;font-size:16px
+}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label.field{color:#aab6c7;font-size:14px}
+button{
+ padding:12px 18px;border:0;border-radius:10px;
+ background:#d8b56a;color:#172236;
+ font-weight:bold;margin:12px 5px 0 0;
+ cursor:pointer
+}
+button.secondary{background:#30435d;color:white}
+#status{line-height:1.8}
+@media(max-width:500px){body{padding:13px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="logo">SEVEN VIDEO STUDIO</div>
+<h1>التجربة الأولى</h1>
+<p>Create Beyond Limits</p>
+</header>
+
+<section class="panel">
+<h3>استيراد الفيديو</h3>
+<label class="pick" for="file">＋ اختر فيديو من جهازك</label>
+<input id="file" type="file" accept="video/*">
+<video id="video" controls playsinline></video>
+<div class="info">
+<div><small>مدة الفيديو</small><strong id="duration">—</strong></div>
+<div><small>دقة الفيديو</small><strong id="resolution">—</strong></div>
+</div>
+</section>
+
+<section class="panel">
+<h3>تحديد المقطع</h3>
+<div class="controls">
+<label class="field">البداية بالثواني
+<input id="start" type="number" min="0" step="0.1" value="0">
+</label>
+<label class="field">النهاية بالثواني
+<input id="end" type="number" min="0" step="0.1" value="0">
+</label>
+</div>
+<button id="preview" disabled>معاينة المقطع</button>
+<button id="stop" class="secondary" disabled>إيقاف</button>
+<p id="status">اختر فيديو لبدء التجربة.</p>
+</section>
+</main>
+
+<script>
+const file=document.getElementById('file');
+const video=document.getElementById('video');
+const duration=document.getElementById('duration');
+const resolution=document.getElementById('resolution');
+const start=document.getElementById('start');
+const end=document.getElementById('end');
+const preview=document.getElementById('preview');
+const stop=document.getElementById('stop');
+const status=document.getElementById('status');
+
+let segmentEnd=0;
+let videoURL=null;
+
+file.addEventListener('change',()=>{
+ const selected=file.files[0];
+ if(!selected)return;
+ if(videoURL)URL.revokeObjectURL(videoURL);
+ videoURL=URL.createObjectURL(selected);
+ video.src=videoURL;
+ video.load();
+ status.textContent='تم اختيار الفيديو، جارٍ تحميل بياناته.';
+});
+
+video.addEventListener('loadedmetadata',()=>{
+ duration.textContent=video.duration.toFixed(1)+' ثانية';
+ resolution.textContent=video.videoWidth+' × '+video.videoHeight;
+ start.value=0;
+ end.value=video.duration.toFixed(1);
+ end.max=video.duration;
+ start.max=video.duration;
+ preview.disabled=false;
+ stop.disabled=false;
+ status.textContent='تم تحميل الفيديو بنجاح. يمكنك تحديد المقطع.';
+});
+
+preview.addEventListener('click',()=>{
+ const a=Number(start.value);
+ const b=Number(end.value);
+
+ if(a<0||b>video.duration||a>=b){
+  status.textContent='تحقق من وقت البداية والنهاية.';
+  return;
+ }
+
+ segmentEnd=b;
+ video.currentTime=a;
+ video.play();
+ status.textContent='تتم الآن معاينة المقطع المحدد.';
+});
+
+video.addEventListener('timeupdate',()=>{
+ if(segmentEnd&&video.currentTime>=segmentEnd){
+  video.pause();
+  video.currentTime=segmentEnd;
+  segmentEnd=0;
+  status.textContent='انتهت معاينة المقطع.';
+ }
+});
+
+stop.addEventListener('click',()=>{
+ video.pause();
+ segmentEnd=0;
+ status.textContent='تم إيقاف المعاينة.';
+});
+</script>
+</body>
+</html>
